@@ -1,0 +1,64 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# Color Base16 
+
+BASE16_SHELL=$HOME/.config/base16-shell/
+
+[ -n "$PS1"  ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
+
+
+
+# Path
+
+PATH=$PATH":~/gitReps/powerline-shell:"
+
+# Prompt
+
+# Turn on colored prompt
+
+ force_color_prompt=yes
+
+parse_git_branch(){
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+PS1=""
+function _update(){
+    
+if [ "$color_prompt"=yes ];then
+    branch="$(parse_git_branch)"
+
+    if [ ${#branch} != 0 ]; then
+    
+	if [ "$branch" == '(master)' ];then
+	    branch=' \e[0;31m'$branch'\e[m '
+	else
+	    branch=' \e[0;32m'$branch'\e[m '
+	fi
+	
+    fi
+    
+    PS1="\u » \W $branch\$ "
+else
+    PS1='\u@\h \W $(parse_git_branch)\$  '
+fi
+}
+
+PROMPT_COMMAND="_update; $PROMPT_COMMAND"
+unset color_prompt force_color_prompt
+
+#PS1=""
+
+#function _update_ps1(){
+#    PS1="$(powerline-shell.py $? 2> /dev/null)"
+#}
+
+#PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+
+alias ls='ls --color=auto'
+alias la='ls --color=auto -la'
+
